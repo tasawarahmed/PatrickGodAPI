@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace PatrickGodAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]//
     /* 
@@ -37,6 +40,7 @@ namespace PatrickGodAPI.Controllers
         [Route("GetAll")]
         public async Task<ActionResult<ServiceResponse<List<GetCharacterDto>>>> Get()
         {
+            //int userId = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)!.Value);
             return Ok(await characterService.GetAllCharacters());
         }
 
@@ -74,6 +78,12 @@ namespace PatrickGodAPI.Controllers
                 return NotFound(response);
             }
             return Ok(response);
+        }
+
+        [HttpPost("Skill")]
+        public async Task<ActionResult<ServiceResponse<GetCharacterDto>>> AddCharacterSkill(AddCharacterSkillDto characterSkill)
+        {
+            return Ok(await characterService.AddCharacterSkill(characterSkill));
         }
     }
 }

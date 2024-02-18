@@ -1,4 +1,6 @@
-﻿namespace PatrickGodAPI
+﻿using PatrickGodAPI.Dtos.Weapon;
+
+namespace PatrickGodAPI
 {
     public class AutoMapperProfile : Profile
     {
@@ -7,6 +9,8 @@
             CreateMap<Character, GetCharacterDto>();
             CreateMap<AddCharacterDto, Character>();   
             CreateMap<UpdateCharacterDto, Character>();
+            CreateMap<Weapon, GetWeaponDto>();
+            CreateMap<Skill, GetSkillDto>();
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PatrickGodAPI.Data;
 
@@ -11,9 +12,11 @@ using PatrickGodAPI.Data;
 namespace PatrickGodAPI.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240218083431_Skills")]
+    partial class Skills
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace PatrickGodAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("CharacterSkill", b =>
-                {
-                    b.Property<int>("CharactersId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SkillsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CharactersId", "SkillsId");
-
-                    b.HasIndex("SkillsId");
-
-                    b.ToTable("CharacterSkill");
-                });
 
             modelBuilder.Entity("PatrickGodAPI.Models.Character", b =>
                 {
@@ -61,6 +49,9 @@ namespace PatrickGodAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("SkillId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Strength")
                         .HasColumnType("int");
 
@@ -68,6 +59,8 @@ namespace PatrickGodAPI.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("SkillId");
 
                     b.HasIndex("UserId");
 
@@ -92,26 +85,6 @@ namespace PatrickGodAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Skills");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Damage = 30,
-                            Name = "Fireball"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Damage = 20,
-                            Name = "Frenzy"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Damage = 50,
-                            Name = "Blizzard"
-                        });
                 });
 
             modelBuilder.Entity("PatrickGodAPI.Models.User", b =>
@@ -165,23 +138,12 @@ namespace PatrickGodAPI.Migrations
                     b.ToTable("Weapons");
                 });
 
-            modelBuilder.Entity("CharacterSkill", b =>
-                {
-                    b.HasOne("PatrickGodAPI.Models.Character", null)
-                        .WithMany()
-                        .HasForeignKey("CharactersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("PatrickGodAPI.Models.Skill", null)
-                        .WithMany()
-                        .HasForeignKey("SkillsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("PatrickGodAPI.Models.Character", b =>
                 {
+                    b.HasOne("PatrickGodAPI.Models.Skill", null)
+                        .WithMany("Characters")
+                        .HasForeignKey("SkillId");
+
                     b.HasOne("PatrickGodAPI.Models.User", "User")
                         .WithMany("Characters")
                         .HasForeignKey("UserId");
@@ -203,6 +165,11 @@ namespace PatrickGodAPI.Migrations
             modelBuilder.Entity("PatrickGodAPI.Models.Character", b =>
                 {
                     b.Navigation("Weapon");
+                });
+
+            modelBuilder.Entity("PatrickGodAPI.Models.Skill", b =>
+                {
+                    b.Navigation("Characters");
                 });
 
             modelBuilder.Entity("PatrickGodAPI.Models.User", b =>
